@@ -8,151 +8,107 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 document.addEventListener("DOMContentLoaded", () => {
   const userSelect = document.getElementById("userSelect");
+  const userSelectContainer = document.getElementById("user_select_container");
   const saveButton = document.getElementById("saveUser");
+  const nameTitle = document.getElementById("name_title");
+  const loggedInAs = document.getElementById("logged_in_as");
+  const mutualButton = document.getElementById("mutual_choice_button");
+  const mutualDiv = document.getElementById("mutual_choices");
 
- 
   let userId = localStorage.getItem("user");
+
+  // --- Handle saved user ---
   if (userId) {
     console.log("Existing user:", userId);
     userSelect.value = userId;
-    user_select_container.style.display = "none"
+    loggedInAs.textContent = `User ID: ${userId}`;
+    userSelectContainer.style.display = "none";
   }
-  let loggedInAs = document.getElementById('logged_in_as')
-  loggedInAs.textContent = `User ID: ${userId}`
 
   saveButton.addEventListener("click", () => {
     const choice = userSelect.value;
-    if (!choice) {
-      alert("Please select a user first.");
-      return;
-    }
+    if (!choice) return alert("Please select a user first.");
 
     localStorage.setItem("user", choice);
-    console.log("User saved:", choice);
     alert(`User set to ${choice}`);
-    window.location.reload()
+    window.location.reload();
   });
 
-
-
-console.log("Current user:", userId);
-
-
-
-const selectedOptionDiv = document.getElementById("selected_option");
-
-const noButton = document
-  .getElementById("no")
-  .addEventListener("click", () => choiceNo());
-const yesButton = document
-  .getElementById("yes")
-  .addEventListener(
-    "click",
-    () => choiceYes()
-  );
-
-// select top 1 where name_id not in names.id order by id asc
-async function testConnection() {
-  try {
+  // --- Utility: test connection ---
+  async function testConnection() {
     const { data, error } = await supabase.from("Names").select("*").limit(1);
+    if (error) console.error("Supabase connection failed:", error);
+    else console.log("Supabase connected:", data);
+  }
+  testConnection();
 
-    if (error) {
-      console.error("Supabase connection failed:", error);
-    } else {
-      console.log("Supabase connection successful:", data);
+  // --- Fetch next available name ---
+  async function populateChoice() {
+    if (!userId) return;
+
+    try {
+      const { data, error } = await supabase
+        .rpc("get_unselected_names", { user_id_input: userId })
+        .limit(1);
+
+      if (error) throw error;
+
+      if (!data || data.length === 0) {
+        nameTitle.textContent = "No more names left!";
+        nameTitle.value = "";
+        return;
+      }
+
+      nameTitle.textContent = data[0].name;
+      nameTitle.value = data[0].id;
+    } catch (err) {
+      console.error("Error populating choice:", err);
+      nameTitle.textContent = "Error fetching name";
     }
-  } catch (err) {
-    console.error("Unexpected error:", err);
   }
-}
-const nameTitle = document.getElementById("name_title");
 
-async function populateChoice() {
-  try {
-    // get current choice from choices table for this user
-    // select top 1 name where id not in choices[name_id] order by id asc
-    const { data, error } = await supabase
-      .rpc("get_unselected_names", { user_id_input: userId })
-      .limit(1);
-    console.log(data);
-    nameTitle.textContent = `${data[0].name}`;
-    nameTitle.value = data[0].id;
-  } catch (error) {
-    console.log(error);
+  populateChoice();
+
+  // --- Handle Like / Hate buttons ---
+  async function submitChoice(answer) {
+    if (!nameTitle.value) return;
+
+    try {
+      const { error } = await supabase.from("Choices").insert([
+        {
+          name_id: nameTitle.value,
+          user_id: userId,
+          answer: answer ? 1 : 0,
+        },
+      ]);
+
+      if (error) throw error;
+
+      console.log("Choice saved:", { userId, nameId: nameTitle.value, answer });
+      await populateChoice(); // move to next name immediately
+    } catch (err) {
+      console.error("Error submitting choice:", err);
+    }
   }
-}
 
-populateChoice();
+  document.getElementById("yes").addEventListener("click", () => submitChoice(true));
+  document.getElementById("no").addEventListener("click", () => submitChoice(false));
 
-// async function getFemaleNames() {
-//   try {
-//     const { data, error } = await supabase
-//       .from("Names")
-//       .select("*")
-//       .eq("gender", "Female")
-//       .limit(5);
+  // --- Fetch mutual likes ---
+  mutualButton.addEventListener("click", async () => {
+    try {
+      const { data, error } = await supabase.from("mutual_likes").select("*");
+      if (error) throw error;
 
-//     console.log(data);
-//   } catch (error) {
-//     console.error(error);
-//   }
-// }
-// getFemaleNames();
+      if (!data || data.length === 0) {
+        mutualDiv.textContent = "No mutual likes found.";
+        return;
+      }
 
-async function choiceNo() {
-  console.log(nameTitle.value);
-  
-  const { data, error } = await supabase
-    .from("Choices")
-    .insert([{ name_id: nameTitle.value, user_id: userId, answer: 0 }]);
-    setTimeout(5000, window.location.reload())
-
-  if (error) {
-    console.error("Error inserting data:", error);
-  } else {
-    console.log("Data inserted:", data);
-  }
-}
-async function choiceYes() {
-  console.log(nameTitle.value);
-  
-  const { data, error } = await supabase
-    .from("Choices")
-    .insert([{ name_id: nameTitle.value, user_id: userId, answer: 1 }]);
-    setTimeout(5000, window.location.reload())
-
-  if (error) {
-    console.error("Error inserting data:", error);
-  } else {
-    console.log("Data inserted:", data);
-  }
-}
-
-// save choice as no
-// save choice as yes
-
-
-
-testConnection();
-
-// get list of my 'Yes'
-// get mutual yes
-let choicesButton = document.getElementById("mutual_choice_button");
-// choices.addEventListener("click", () => getMutualChoices())
-let choiceDiv = document.getElementById("mutual_choices")
-
-choicesButton.addEventListener('click', async () => {
-  const { data, error } = await supabase.from('mutual_likes').select('*');
-  if (error) {
-    console.error(error);
-    choiceDiv.textContent = 'Error fetching mutual choices';
-  } else if (data.length === 0) {
-    choiceDiv.textContent = 'No mutual likes found';
-  } else {
-    choiceDiv.innerHTML = data.map(d => `<p>${d.name}</p>`).join('');
-  }
+      mutualDiv.innerHTML = data.map((d) => `<p>${d.name}</p>`).join("");
+    } catch (err) {
+      console.error("Error fetching mutual likes:", err);
+      mutualDiv.textContent = "Error fetching mutual choices.";
+    }
+  });
 });
-
-})
-
-
