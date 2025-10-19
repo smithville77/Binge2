@@ -2,53 +2,53 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>User Choice App</title>
+  <title>What's her name?</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-900 text-gray-100 min-h-screen flex items-center justify-center p-4">
+<body class="bg-gray-900 text-gray-100 min-h-screen flex items-center justify-center p-8">
 
   <!-- Main Card -->
-  <div class="w-full h-screen flex flex-col justify-between bg-gray-800 rounded-3xl shadow-xl p-6 sm:p-8 overflow-hidden">
+  <div class="w-full h-screen flex flex-col justify-between bg-gray-800 rounded-3xl shadow-xl p-12 sm:p-16 overflow-hidden">
 
     <!-- Header -->
-    <div class="text-center flex-shrink-0 mb-4">
-      <h1 class="text-6xl font-bold text-orange-400 mb-2">What's her name?</h1>
+    <div class="text-center flex-shrink-0 mb-8">
+      <h1 class="text-6xl font-bold text-orange-400 mb-4">What's her name?</h1>
       <p id="logged_in_as" class="text-2xl text-gray-400"></p>
     </div>
 
     <!-- User Select -->
-    <div id="user_select_container" class="flex-shrink-0 mb-6 px-2">
-      <label for="userSelect" class="block text-2xl font-semibold mb-2">Select User:</label>
-      <select id="userSelect" class="w-full p-5 rounded-xl bg-gray-700 border border-gray-600
-                                    focus:outline-none focus:ring-2 focus:ring-orange-400 text-2xl mb-3">
+    <div id="user_select_container" class="flex-shrink-0 mb-12 px-4">
+      <label for="userSelect" class="block text-2xl font-semibold mb-4">Select User:</label>
+      <select id="userSelect" class="w-full p-10 rounded-xl bg-gray-700 border border-gray-600
+                                    focus:outline-none focus:ring-2 focus:ring-orange-400 text-2xl mb-4">
         <option value="">-- Choose a user --</option>
         <option value="1">Adam</option>
         <option value="2">Tori</option>
       </select>
-      <button id="saveUser" class="w-full bg-orange-500 hover:bg-orange-600 text-gray-100 font-bold rounded-xl p-5 text-2xl shadow-md transition">
+      <button id="saveUser" class="w-full bg-orange-500 hover:bg-orange-600 text-gray-100 font-bold rounded-xl p-10 text-2xl shadow-md transition">
         Confirm
       </button>
     </div>
 
     <!-- Name Title -->
-    <h2 id="name_title" class="text-center text-2xl font-semibold mb-6 flex-shrink-0 px-2"></h2>
+    <h2 id="name_title" class="text-center text-2xl font-semibold mb-12 flex-shrink-0 px-4"></h2>
 
     <!-- Like/Hate Buttons (approx 30% vertical space) -->
-    <div class="flex gap-4 mb-6 flex-none px-2" style="height:30%;">
-      <button id="yes" class="flex-1 bg-green-500 hover:bg-green-600 text-gray-100 font-bold rounded-xl p-6 text-3xl shadow-md transition">
+    <div class="flex gap-6 mb-12 flex-none px-4" style="height:30%;">
+      <button id="yes" class="flex-1 bg-green-500 hover:bg-green-600 text-gray-100 font-bold rounded-xl p-12 text-3xl shadow-md transition">
         Like it!
       </button>
-      <button id="no" class="flex-1 bg-red-500 hover:bg-red-600 text-gray-100 font-bold rounded-xl p-6 text-3xl shadow-md transition">
+      <button id="no" class="flex-1 bg-red-500 hover:bg-red-600 text-gray-100 font-bold rounded-xl p-12 text-3xl shadow-md transition">
         Hate it!
       </button>
     </div>
 
     <!-- Mutual Choices (scrollable if needed) -->
-    <div class="flex flex-col flex-1 overflow-y-auto px-2 pb-4">
-      <button id="mutual_choice_button" class="w-full bg-purple-500 hover:bg-purple-600 text-gray-100 font-bold rounded-xl p-5 text-2xl shadow-md transition mb-4">
+    <div class="flex flex-col flex-1 overflow-y-auto px-4 pb-8">
+      <button id="mutual_choice_button" class="w-full bg-purple-500 hover:bg-purple-600 text-gray-100 font-bold rounded-xl p-10 text-2xl shadow-md transition mb-6">
         Show Mutual Likes
       </button>
-      <div id="mutual_choices" class="space-y-3 p-4 bg-gray-700 rounded-xl text-2xl">
+      <div id="mutual_choices" class="space-y-6 p-8 bg-gray-700 rounded-xl text-2xl">
         <!-- Mutual names appear here -->
       </div>
     </div>
