@@ -75,7 +75,7 @@ async function populateChoice() {
       .rpc("get_unselected_names", { user_id_input: userId })
       .limit(1);
     console.log(data);
-    nameTitle.textContent = `Name: ${data[0].name}`;
+    nameTitle.textContent = `${data[0].name}`;
     nameTitle.value = data[0].id;
   } catch (error) {
     console.log(error);
