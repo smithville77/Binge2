@@ -1,0 +1,17 @@
+{
+  "name": "binge2",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000B\u0000i\u0000n\u0000g\u0000e\u00002\u0000\r\u0000 \u0000",
+  "main": "TestFile.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.75.1",
+    "nodejs": "^0.0.0"
+  }
+}
